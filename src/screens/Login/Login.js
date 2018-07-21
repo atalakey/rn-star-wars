@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Content, Form, Item, Input, Label, Button, Text } from 'native-base';
 import { startSearchScreen } from '../../../index';
 
@@ -14,22 +14,104 @@ class LoginScreen extends Component {
     navBarTextColor: 'white' // change the text color of the title (remembered across pushes)
   };
 
+  constructor(props){
+    super(props);
+    this.state = {
+      isLoading: false,
+      controls: {
+        username: {
+          value: 'Luke Skywalker'
+        },
+        password: {
+          value: '19BBY'
+        }
+      }
+    }
+  }
+
   loginHandler = () => {
-    startSearchScreen();
-  };
+    this.authenticate().then(authenticated => {
+      console.log(authenticated);
+      if (authenticated) {
+        startSearchScreen();
+      } else {
+        alert('username or password is invalid');
+      }
+    });
+  }
+
+  authenticate = () => {
+    this.toggleIsLoading();
+    let authenticated = false;
+    let username = this.state.controls.username.value;
+    let password = this.state.controls.password.value;
+    let url = `https://swapi.co/api/people/?search=${username}`;
+    return fetch(url)
+      .then(response => response.json())
+      .then(responseJson => {        
+        this.toggleIsLoading();
+        setTimeout(() => {}, 2000);
+        if (responseJson.results) {
+          let name = responseJson.results[0].name;
+          let birthYear = responseJson.results[0].birth_year;
+          authenticated = username.toLowerCase() === name.toLowerCase() && password.toLowerCase() === birthYear.toLowerCase();
+        }
+        return authenticated;
+      })
+      .catch(error => console.log(error));
+  }
+
+  toggleIsLoading = () => {
+    this.setState(previousState => {
+      return {
+        ...previousState,
+        isLoading: !previousState.isLoading
+      }
+    });
+  }
+
+  updateInputState = (key, value) => {
+    this.setState(previousState => {
+      return {
+        controls: {
+          ...previousState.controls,
+          [key]: {
+            ...previousState.controls[key],
+            value: value
+          }
+        }
+      }
+    });
+  }
 
   render() {
-    return (
-      <MainContainer imageBackgroundSource={backgroundImage}>
-        <Content contentContainerStyle={styles.content}>
+    let content = null;
+
+    if (this.state.isLoading) {
+      content = (
+        <View style={styles.activityIndicatorContainer}>
+          <ActivityIndicator/>
+        </View>
+      );
+    } else {
+      content = (
+        <View>
           <Form>
             <Item floatingLabel>
               <Label>Username</Label>
-              <Input />
+              <Input
+                style={styles.input}
+                value={this.state.controls.username.value}
+                onChangeText={(text) => this.updateInputState('username', text)}
+              />
             </Item>
             <Item floatingLabel last>
               <Label>Password</Label>
-              <Input />
+              <Input
+                style={styles.input}
+                value={this.state.controls.password.value}
+                onChangeText={(text) => this.updateInputState('password', text)}
+              />
             </Item>
           </Form>
           <View style={styles.buttonContainer}>
@@ -37,6 +119,14 @@ class LoginScreen extends Component {
               <Text>Sign In</Text>
             </Button>
           </View>
+        </View>
+      );
+    }
+
+    return (
+      <MainContainer imageBackgroundSource={backgroundImage}>
+        <Content contentContainerStyle={styles.content}>
+          {content}
         </Content>
       </MainContainer>
     );
@@ -49,8 +139,16 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center'
   },
+  input: {
+    color : "white"
+  },
   buttonContainer: {
     flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  activityIndicatorContainer: {
+    flex: 1,
+    flexDirection: 'column',
     justifyContent: 'center'
   }
 });
