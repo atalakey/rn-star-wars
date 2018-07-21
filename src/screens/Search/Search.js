@@ -1,21 +1,24 @@
 import React, {Component} from 'react';
 import { ImageBackground, StyleSheet } from 'react-native';
-import { Container, Content } from 'native-base';
+import { Container, Header, Item, Input, Icon } from 'native-base';
 
 import backgroundImage from '../../assets/background.jpg';
 
 class SearchScreen extends Component {
   static navigatorStyle = {
-    backgroundColor: 'transparent'
+    navBarHidden: true
   };
 
   render() {
     return (
       <Container>
         <ImageBackground style={styles.backgroundImage} source={backgroundImage}>
-          <Content>
-
-          </Content>
+          <Header transparent searchBar rounded>
+            <Item>
+              <Icon name="ios-search" />
+              <Input placeholder="Search" />
+            </Item>
+          </Header>
         </ImageBackground>
       </Container>
     );

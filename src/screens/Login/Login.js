@@ -7,14 +7,13 @@ import backgroundImage from '../../assets/background.jpg';
 
 class LoginScreen extends Component {
   static navigatorStyle = {
-    backgroundColor: 'transparent'
+    navBarTransparent: true, // make the nav bar transparent, works best with drawUnderNavBar:true
+    navBarTranslucent: true, // make the nav bar semi-translucent, works best with drawUnderNavBar:true
+    drawUnderNavBar: true, // draw the screen content under the nav bar, works best with navBarTranslucent:true
+    navBarTextColor: 'white' // change the text color of the title (remembered across pushes)
   };
 
   loginHandler = () => {
-    // this.props.navigator.push({
-    //   screen: 'star-wars.SearchScreen',
-    //   title: 'Search'
-    // });
     startSearchScreen();
   };
 
@@ -22,7 +21,7 @@ class LoginScreen extends Component {
     return (
       <Container>
         <ImageBackground style={styles.backgroundImage} source={backgroundImage}>
-          <Content>
+          <Content contentContainerStyle={styles.container}>
             <Form>
               <Item floatingLabel>
                 <Label>Username</Label>
@@ -46,6 +45,11 @@ class LoginScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
   backgroundImage: {
     flex: 1,
     width: '100%'
