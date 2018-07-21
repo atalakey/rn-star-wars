@@ -1,12 +1,21 @@
 import React, {Component} from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import { Container, Content, Form, Item, Input, Label, Button, Text } from 'native-base';
+import { startSearchScreen } from '../../../index';
 
 import backgroundImage from '../../assets/background.jpg';
 
 class LoginScreen extends Component {
   static navigatorStyle = {
     backgroundColor: 'transparent'
+  };
+
+  loginHandler = () => {
+    // this.props.navigator.push({
+    //   screen: 'star-wars.SearchScreen',
+    //   title: 'Search'
+    // });
+    startSearchScreen();
   };
 
   render() {
@@ -25,7 +34,7 @@ class LoginScreen extends Component {
               </Item>
             </Form>
             <View style={styles.buttonContainer}>
-              <Button transparent light onPress={() => alert('Sign In')}>
+              <Button transparent light onPress={this.loginHandler}>
                 <Text>Sign In</Text>
               </Button>
             </View>

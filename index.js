@@ -11,3 +11,13 @@ Navigation.startSingleScreenApp({
     title: 'Login' // title of the screen as appears in the nav bar (optional)
   }
 });
+
+// Start the search screen
+export const startSearchScreen = () => {
+  Navigation.startSingleScreenApp({
+    screen: {
+      screen: 'star-wars.SearchScreen', // unique ID registered with Navigation.registerScreen
+      title: 'Search' // title of the screen as appears in the nav bar (optional)
+    }
+  });
+};
