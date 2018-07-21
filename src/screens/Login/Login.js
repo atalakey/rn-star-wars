@@ -1,42 +1,50 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import { ImageBackground, StyleSheet, View } from 'react-native';
+import { Container, Content, Form, Item, Input, Label, Button, Text } from 'native-base';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import backgroundImage from '../../assets/background.jpg';
 
 class LoginScreen extends Component {
+  static navigatorStyle = {
+    backgroundColor: 'transparent'
+  };
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
+      <Container>
+        <ImageBackground style={styles.backgroundImage} source={backgroundImage}>
+          <Content>
+            <Form>
+              <Item floatingLabel>
+                <Label>Username</Label>
+                <Input />
+              </Item>
+              <Item floatingLabel last>
+                <Label>Password</Label>
+                <Input />
+              </Item>
+            </Form>
+            <View style={styles.buttonContainer}>
+              <Button transparent light onPress={() => alert('Sign In')}>
+                <Text>Sign In</Text>
+              </Button>
+            </View>
+          </Content>
+        </ImageBackground>
+      </Container>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  backgroundImage: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    width: '100%'
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center'
+  }
 });
 
 export default LoginScreen;
