@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { StyleSheet } from 'react-native';
 import { Content, Card } from "native-base";
 
 import MainContainer from '../../components/MainContainer/MainContainer';
@@ -115,10 +116,19 @@ export default class DetailsScreen extends Component {
 
     return (
       <MainContainer>
-        <Content padder>
+        <Content padder contentContainerStyle={this.state.isLoading ? styles.content : {}}>
           {content}
         </Content>
       </MainContainer>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  content: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingTop: 90
+  }
+});

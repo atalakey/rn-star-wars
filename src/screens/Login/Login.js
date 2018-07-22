@@ -1,21 +1,13 @@
 import React, {Component} from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, AlertIOS, Platform, StyleSheet, View } from 'react-native';
 import { Content, Form, Item, Input, Label, Button, Text } from 'native-base';
-import { startSearchScreen } from '../../../index';
 
+import { startSearchScreen } from '../../../index';
 import MainContainer from '../../components/MainContainer/MainContainer';
 import MainActivityIndicator from '../../components/MainActivityIndicator/MainActivityIndicator';
 import backgroundImage from '../../assets/loginBackground.jpg';
 
 export default class LoginScreen extends Component {
-  static navigatorStyle = {
-    navBarTransparent: true, // make the nav bar transparent, works best with drawUnderNavBar:true
-    navBarTranslucent: true, // make the nav bar semi-translucent, works best with drawUnderNavBar:true
-    drawUnderNavBar: true, // draw the screen content under the nav bar, works best with navBarTranslucent:true
-    navBarTextColor: 'white', // change the text color of the title (remembered across pushes)
-    navBarTitleTextCentered: true, // default: false. centers the title.
-  };
-
   constructor(props){
     super(props);
     this.state = {
@@ -37,7 +29,11 @@ export default class LoginScreen extends Component {
       if (authenticated) {
         startSearchScreen();
       } else {
-        alert('username or password is invalid');
+        if (Platform.OS === 'ios') {
+          AlertIOS.alert('Unable to sign in', 'The username or password that you typed is incorrect');
+        } else if (Platform.OS === 'android') {
+          Alert.alert('Unable to sign in', 'The username or password that you typed is incorrect');
+        }
       }
     }).catch((error) => {
       console.log('Error:', error);

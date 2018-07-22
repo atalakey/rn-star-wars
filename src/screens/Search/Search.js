@@ -1,19 +1,12 @@
 import React, {Component} from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, Keyboard, StyleSheet, View } from 'react-native';
 import { Header, Item, Input, Icon, Card, CardItem, Text, Body } from 'native-base';
 
+import {startLoginScreen} from '../../../index';
 import MainContainer from '../../components/MainContainer/MainContainer';
 import MainActivityIndicator from '../../components/MainActivityIndicator/MainActivityIndicator';
 
 export default class SearchScreen extends Component {
-  static navigatorStyle = {
-    navBarTextColor: 'white', // change the text color of the title (remembered across pushes)
-    navBarBackgroundColor: 'black', // change the background color of the nav bar (remembered across pushes)
-    navBarButtonColor: 'white', // Change color of nav bar buttons (eg. the back button) (remembered across pushes)
-    navBarTitleTextCentered: true, // default: false. centers the title.
-    navBarTopPadding: 24 // Optional, set navBar top padding in dp. Useful when StatusBar.translucent=true on Android Lollipop and above.
-  };
-
   constructor(props){
     super(props);
     this.state = {
@@ -22,7 +15,23 @@ export default class SearchScreen extends Component {
         nextUrl: '',
         planets: []
       }
+    };
+
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
+  }
+
+  onNavigatorEvent = (event) => { // this is the onPress handler for the buttons
+    if (event.type == 'NavBarButtonPress') { // this is the event type for button presses
+      if (event.id == 'sign-out') { // this is the same id field from the static navigatorButtons definition
+        this.logoutHandler();
+      }
     }
+  };
+
+  logoutHandler = () => {
+    Keyboard.dismiss();
+    this.toggleIsLoading();
+    setTimeout(() => startLoginScreen(), 2000);
   }
 
   searchInputOnChangeTextHandler = (searchStr) => {
@@ -132,7 +141,7 @@ export default class SearchScreen extends Component {
             <Input placeholder="Search" onChangeText={this.searchInputOnChangeTextHandler} />
           </Item>
         </Header>
-        <View style={styles.flatListContainer}>
+        <View style={this.state.isLoading ? styles.content : styles.flatListContainer}>
           {content}
         </View>
       </MainContainer>
@@ -141,6 +150,11 @@ export default class SearchScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+  content: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
   flatListContainer: {
     padding: 20
   }
