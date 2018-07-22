@@ -31,14 +31,17 @@ export default class SearchScreen extends Component {
     this.fetchData(url).then((data) => {
       this.updateDataState(data, true);
       this.toggleIsLoading();
-    }).catch(() => this.toggleIsLoading());;
+    }).catch((error) => {
+      console.log('Error:', error)
+      this.toggleIsLoading();
+    });;
   }
 
   flatListOnEndReachedHandler = () => {
     if (this.state.data.nextUrl !== '') {
       this.fetchData(this.state.data.nextUrl).then((data) => {
         this.updateDataState(data, false);
-      });
+      }).catch(error => console.log('Error:', error));
     }
   }
 
@@ -53,13 +56,12 @@ export default class SearchScreen extends Component {
   }
 
   fetchData = (url) => { 
-    return fetch(url)
-      .then(response => response.json())
-      .then(responseJson => {
-        console.log('Response: ', responseJson);
-        return responseJson
-      })
-      .catch(error => console.log('Error fetching data:', error));
+    return fetch(url).then(response => {
+      return response.json();
+    }).then(responseJson => {
+      console.log('Response: ', responseJson);
+      return responseJson
+    }).catch(error => console.log('Error fetching data:', error));
   }
 
   toggleIsLoading = () => {

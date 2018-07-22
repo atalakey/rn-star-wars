@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { StyleSheet } from 'react-native';
 import { Content, Card } from "native-base";
 
 import MainContainer from '../../components/MainContainer/MainContainer';
@@ -44,17 +43,16 @@ export default class DetailsScreen extends Component {
     Promise.all(promiseArray).then((data) => {
       this.updateDataState(data);
       this.toggleIsLoading();
-    });
+    }).catch(error => console.log('Error:', error));
   }
 
   fetchData = (url) => { 
-    return fetch(url)
-      .then(response => response.json())
-      .then(responseJson => {
-        console.log('Response: ', responseJson);
-        return responseJson
-      })
-      .catch(error => console.log('Error fetching data:', error));
+    return fetch(url).then(response => {
+      return response.json();
+    }).then(responseJson => {
+      console.log('Response: ', responseJson);
+      return responseJson
+    }).catch(error => console.log('Error fetching data:', error));
   }
 
   toggleIsLoading = () => {

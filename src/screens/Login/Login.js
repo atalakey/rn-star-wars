@@ -39,7 +39,10 @@ export default class LoginScreen extends Component {
       } else {
         alert('username or password is invalid');
       }
-    }).catch(() => this.toggleIsLoading());
+    }).catch((error) => {
+      console.log('Error:', error);
+      this.toggleIsLoading();
+    });
   }
 
   authenticate = () => {
@@ -48,18 +51,17 @@ export default class LoginScreen extends Component {
     let username = this.state.controls.username.value;
     let password = this.state.controls.password.value;
     let url = `https://swapi.co/api/people/?search=${username}`;
-    return fetch(url)
-      .then(response => response.json())
-      .then(responseJson => {
-        console.log('Response: ', responseJson);
-        if (responseJson.results) {
-          let name = responseJson.results[0].name;
-          let birthYear = responseJson.results[0].birth_year;
-          authenticated = username.toLowerCase() === name.toLowerCase() && password.toLowerCase() === birthYear.toLowerCase();
-        }
-        return authenticated;
-      })
-      .catch(error => console.log('Error fetching data:', error));
+    return fetch(url).then(response => {
+      return response.json();
+    }).then(responseJson => {
+      console.log('Response: ', responseJson);
+      if (responseJson.results) {
+        let name = responseJson.results[0].name;
+        let birthYear = responseJson.results[0].birth_year;
+        authenticated = username.toLowerCase() === name.toLowerCase() && password.toLowerCase() === birthYear.toLowerCase();
+      }
+      return authenticated;
+    }).catch(error => console.log('Error fetching data:', error));
   }
 
   toggleIsLoading = () => {
