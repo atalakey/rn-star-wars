@@ -6,7 +6,7 @@ import { startSearchScreen } from '../../../index';
 import MainContainer from '../../components/MainContainer/MainContainer';
 import backgroundImage from '../../assets/loginBackground.jpg';
 
-class LoginScreen extends Component {
+export default class LoginScreen extends Component {
   static navigatorStyle = {
     navBarTransparent: true, // make the nav bar transparent, works best with drawUnderNavBar:true
     navBarTranslucent: true, // make the nav bar semi-translucent, works best with drawUnderNavBar:true
@@ -31,13 +31,14 @@ class LoginScreen extends Component {
 
   loginHandler = () => {
     this.authenticate().then(authenticated => {
-      console.log(authenticated);
+      console.log('Authenticated:', authenticated);
+      this.toggleIsLoading();
       if (authenticated) {
         startSearchScreen();
       } else {
         alert('username or password is invalid');
       }
-    });
+    }).catch(() => this.toggleIsLoading());
   }
 
   authenticate = () => {
@@ -46,11 +47,13 @@ class LoginScreen extends Component {
     let username = this.state.controls.username.value;
     let password = this.state.controls.password.value;
     let url = `https://swapi.co/api/people/?search=${username}`;
+    console.log('Username:', username);
+    console.log('Password:', password);
+    console.log('URL:', url);
     return fetch(url)
       .then(response => response.json())
-      .then(responseJson => {        
-        this.toggleIsLoading();
-        setTimeout(() => {}, 2000);
+      .then(responseJson => {
+        console.log('Response: ', responseJson);
         if (responseJson.results) {
           let name = responseJson.results[0].name;
           let birthYear = responseJson.results[0].birth_year;
@@ -58,7 +61,7 @@ class LoginScreen extends Component {
         }
         return authenticated;
       })
-      .catch(error => console.log(error));
+      .catch(error => console.log('Error fetching data:', error));
   }
 
   toggleIsLoading = () => {
@@ -152,5 +155,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 });
-
-export default LoginScreen;
