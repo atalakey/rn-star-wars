@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Content, Form, Item, Input, Label, Button, Text } from 'native-base';
 import { startSearchScreen } from '../../../index';
 
 import MainContainer from '../../components/MainContainer/MainContainer';
+import MainActivityIndicator from '../../components/MainActivityIndicator/MainActivityIndicator';
 import backgroundImage from '../../assets/loginBackground.jpg';
 
 export default class LoginScreen extends Component {
@@ -30,15 +31,16 @@ export default class LoginScreen extends Component {
   }
 
   loginHandler = () => {
-    this.authenticate().then(authenticated => {
-      console.log('Authenticated:', authenticated);
+    this.authenticate()
+    .then(authenticated => {
       this.toggleIsLoading();
       if (authenticated) {
         startSearchScreen();
       } else {
         alert('username or password is invalid');
       }
-    }).catch(() => this.toggleIsLoading());
+    })
+    .catch(() => this.toggleIsLoading());
   }
 
   authenticate = () => {
@@ -47,9 +49,6 @@ export default class LoginScreen extends Component {
     let username = this.state.controls.username.value;
     let password = this.state.controls.password.value;
     let url = `https://swapi.co/api/people/?search=${username}`;
-    console.log('Username:', username);
-    console.log('Password:', password);
-    console.log('URL:', url);
     return fetch(url)
       .then(response => response.json())
       .then(responseJson => {
@@ -92,9 +91,7 @@ export default class LoginScreen extends Component {
 
     if (this.state.isLoading) {
       content = (
-        <View style={styles.activityIndicatorContainer}>
-          <ActivityIndicator/>
-        </View>
+        <MainActivityIndicator />
       );
     } else {
       content = (
@@ -147,11 +144,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  activityIndicatorContainer: {
-    flex: 1,
-    flexDirection: 'column',
     justifyContent: 'center'
   }
 });

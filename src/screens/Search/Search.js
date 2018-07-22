@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
-import { Header, Item, Input, Icon, Content, Card, CardItem, Text, Body } from 'native-base';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { Header, Item, Input, Icon, Card, CardItem, Text, Body } from 'native-base';
 
 import MainContainer from '../../components/MainContainer/MainContainer';
+import MainActivityIndicator from '../../components/MainActivityIndicator/MainActivityIndicator';
 
 export default class SearchScreen extends Component {
   static navigatorStyle = {
@@ -23,19 +24,31 @@ export default class SearchScreen extends Component {
   searchInputOnChangeTextHandler = (searchStr) => {
     let url = `https://swapi.co/api/planets/?search=${searchStr}`;
     this.toggleIsLoading();
-    this.fetchData(url).then((data) => {
+    this.fetchData(url)
+    .then((data) => {
       this.updateDataState(data, true);
       this.toggleIsLoading();
-    }).catch(() => this.toggleIsLoading());;
+    })
+    .catch(() => this.toggleIsLoading());;
   }
 
   flatListOnEndReachedHandler = () => {
-    console.log('flatListOnEndReachedHandler');
     if (this.state.data.nextUrl !== '') {
-      this.fetchData(this.state.data.nextUrl).then((data) => {
+      this.fetchData(this.state.data.nextUrl)
+      .then((data) => {
         this.updateDataState(data, false);
       });
     }
+  }
+
+  cardItemOnPressHandler = (item) => {    
+    this.props.navigator.push({
+      screen: 'star-wars.DetailsScreen',
+      title: item.name,
+      passProps: {
+        item
+      }
+    });
   }
 
   fetchData = (url) => { 
@@ -79,16 +92,12 @@ export default class SearchScreen extends Component {
   }
 
   render() {
-    console.log('Is Loding:', this.state.isLoading);
-    console.log('Planets array length:', this.state.data.planets.length);
-    console.log('Planets:', this.state.data.planets);
+    console.log('State:', this.state);
     let content = null;
 
     if (this.state.isLoading) {
       content = (
-        <View style={styles.activityIndicatorContainer}>
-          <ActivityIndicator/>
-        </View>
+        <MainActivityIndicator />
       );
     } else {
       content = (
@@ -97,7 +106,7 @@ export default class SearchScreen extends Component {
           keyExtractor={item => item.name}
           renderItem={({item}) => (
             <Card>
-              <CardItem button onPress={() => console.log(item)}>
+              <CardItem button onPress={() => this.cardItemOnPressHandler(item)}>
                 <Body>
                   <Text>
                     {item.name}
@@ -131,10 +140,5 @@ export default class SearchScreen extends Component {
 const styles = StyleSheet.create({
   flatListContainer: {
     padding: 20
-  },
-  activityIndicatorContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center'
   }
 });
