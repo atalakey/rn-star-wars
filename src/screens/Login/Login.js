@@ -12,7 +12,8 @@ export default class LoginScreen extends Component {
     navBarTransparent: true, // make the nav bar transparent, works best with drawUnderNavBar:true
     navBarTranslucent: true, // make the nav bar semi-translucent, works best with drawUnderNavBar:true
     drawUnderNavBar: true, // draw the screen content under the nav bar, works best with navBarTranslucent:true
-    navBarTextColor: 'white' // change the text color of the title (remembered across pushes)
+    navBarTextColor: 'white', // change the text color of the title (remembered across pushes)
+    navBarTitleTextCentered: true, // default: false. centers the title.
   };
 
   constructor(props){
@@ -31,16 +32,14 @@ export default class LoginScreen extends Component {
   }
 
   loginHandler = () => {
-    this.authenticate()
-    .then(authenticated => {
+    this.authenticate().then(authenticated => {
       this.toggleIsLoading();
       if (authenticated) {
         startSearchScreen();
       } else {
         alert('username or password is invalid');
       }
-    })
-    .catch(() => this.toggleIsLoading());
+    }).catch(() => this.toggleIsLoading());
   }
 
   authenticate = () => {

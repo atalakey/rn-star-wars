@@ -11,7 +11,8 @@ export default class DetailsScreen extends Component {
     navBarTextColor: 'white', // change the text color of the title (remembered across pushes)
     navBarBackgroundColor: 'black', // change the background color of the nav bar (remembered across pushes)
     navBarButtonColor: 'white', // Change color of nav bar buttons (eg. the back button) (remembered across pushes)
-    navBarTopPadding: 24, // Optional, set navBar top padding in dp. Useful when StatusBar.translucent=true on Android Lollipop and above.
+    navBarTitleTextCentered: true, // default: false. centers the title.
+    navBarTopPadding: 24 // Optional, set navBar top padding in dp. Useful when StatusBar.translucent=true on Android Lollipop and above.
   };
 
   constructor(props){
@@ -40,8 +41,7 @@ export default class DetailsScreen extends Component {
       promiseArray.push(this.fetchData(url));
     });
 
-    Promise.all(promiseArray)
-    .then((data) => {
+    Promise.all(promiseArray).then((data) => {
       this.updateDataState(data);
       this.toggleIsLoading();
     });

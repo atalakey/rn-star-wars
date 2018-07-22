@@ -7,7 +7,11 @@ import MainActivityIndicator from '../../components/MainActivityIndicator/MainAc
 
 export default class SearchScreen extends Component {
   static navigatorStyle = {
-    navBarHidden: true
+    navBarTextColor: 'white', // change the text color of the title (remembered across pushes)
+    navBarBackgroundColor: 'black', // change the background color of the nav bar (remembered across pushes)
+    navBarButtonColor: 'white', // Change color of nav bar buttons (eg. the back button) (remembered across pushes)
+    navBarTitleTextCentered: true, // default: false. centers the title.
+    navBarTopPadding: 24 // Optional, set navBar top padding in dp. Useful when StatusBar.translucent=true on Android Lollipop and above.
   };
 
   constructor(props){
@@ -24,18 +28,15 @@ export default class SearchScreen extends Component {
   searchInputOnChangeTextHandler = (searchStr) => {
     let url = `https://swapi.co/api/planets/?search=${searchStr}`;
     this.toggleIsLoading();
-    this.fetchData(url)
-    .then((data) => {
+    this.fetchData(url).then((data) => {
       this.updateDataState(data, true);
       this.toggleIsLoading();
-    })
-    .catch(() => this.toggleIsLoading());;
+    }).catch(() => this.toggleIsLoading());;
   }
 
   flatListOnEndReachedHandler = () => {
     if (this.state.data.nextUrl !== '') {
-      this.fetchData(this.state.data.nextUrl)
-      .then((data) => {
+      this.fetchData(this.state.data.nextUrl).then((data) => {
         this.updateDataState(data, false);
       });
     }
