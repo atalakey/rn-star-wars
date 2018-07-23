@@ -16,10 +16,10 @@ export default class LoginScreen extends Component {
       isLoading: false,
       controls: {
         username: {
-          value: 'C-3PO'
+          value: ''
         },
         password: {
-          value: '112BBY'
+          value: ''
         }
       }
     };
