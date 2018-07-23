@@ -24,8 +24,6 @@ const detailsCardItem = props => {
     );
   }
 
-  console.log('detailsCardItem->', props.cardItemContentType, cardItemBodyContent);
-
   return (
     <View>
       <CardItem header bordered>

@@ -1,48 +1,54 @@
 import React, {Component} from 'react';
-import { Alert, AlertIOS, Platform, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Content, Form, Item, Input, Label, Button, Text } from 'native-base';
 
 import { startSearchScreen } from '../../../index';
 import MainContainer from '../../components/MainContainer/MainContainer';
 import MainActivityIndicator from '../../components/MainActivityIndicator/MainActivityIndicator';
+import alert from  '../../utilities/alert';
 import backgroundImage from '../../assets/loginBackground.jpg';
 
 export default class LoginScreen extends Component {
   constructor(props){
     super(props);
+
     this.state = {
       isLoading: false,
       controls: {
         username: {
-          value: 'Luke Skywalker'
+          value: 'C-3PO'
         },
         password: {
-          value: '19BBY'
+          value: '112BBY'
         }
       }
+    };
+
+    if (this.props.loggedOut) {
+      const title = 'Logged Out';
+      const message = 'You have been successfully logged out!';
+      alert(title, message);
     }
   }
 
   loginHandler = () => {
     this.authenticate().then(authenticated => {
-      this.toggleIsLoading();
+      this.toggleIsLoadingState();
       if (authenticated) {
-        startSearchScreen();
+        startSearchScreen(this.state.controls.username.value.toLowerCase());
       } else {
-        if (Platform.OS === 'ios') {
-          AlertIOS.alert('Unable to sign in', 'The username or password that you typed is incorrect');
-        } else if (Platform.OS === 'android') {
-          Alert.alert('Unable to sign in', 'The username or password that you typed is incorrect');
-        }
+        const title = 'Unable to sign in';
+        const message = 'The username or password that you typed is incorrect'
+        alert(title, message);
       }
     }).catch((error) => {
       console.log('Error:', error);
-      this.toggleIsLoading();
+      this.toggleIsLoadingState();
     });
   }
 
   authenticate = () => {
-    this.toggleIsLoading();
+    this.toggleIsLoadingState();
     let authenticated = false;
     let username = this.state.controls.username.value;
     let password = this.state.controls.password.value;
@@ -54,13 +60,13 @@ export default class LoginScreen extends Component {
       if (responseJson.results) {
         let name = responseJson.results[0].name;
         let birthYear = responseJson.results[0].birth_year;
-        authenticated = username.toLowerCase() === name.toLowerCase() && password.toLowerCase() === birthYear.toLowerCase();
+        authenticated = username.toLowerCase() === name.toLowerCase() && password === birthYear;
       }
       return authenticated;
     }).catch(error => console.log('Error fetching data:', error));
   }
 
-  toggleIsLoading = () => {
+  toggleIsLoadingState = () => {
     this.setState(previousState => {
       return {
         ...previousState,
@@ -99,6 +105,8 @@ export default class LoginScreen extends Component {
               <Input
                 style={styles.input}
                 value={this.state.controls.username.value}
+                autoCapitalize='none'
+                autoCorrect={false}
                 onChangeText={(text) => this.updateInputState('username', text)}
               />
             </Item>
@@ -107,6 +115,7 @@ export default class LoginScreen extends Component {
               <Input
                 style={styles.input}
                 value={this.state.controls.password.value}
+                secureTextEntry
                 onChangeText={(text) => this.updateInputState('password', text)}
               />
             </Item>

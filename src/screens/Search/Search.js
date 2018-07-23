@@ -5,13 +5,19 @@ import { Header, Item, Input, Icon, Card, CardItem, Text, Body } from 'native-ba
 import {startLoginScreen} from '../../../index';
 import MainContainer from '../../components/MainContainer/MainContainer';
 import MainActivityIndicator from '../../components/MainActivityIndicator/MainActivityIndicator';
+import alert from '../../utilities/alert';
 
 export default class SearchScreen extends Component {
   constructor(props){
     super(props);
+    
     this.state = {
+      username: props.username,
       isLoading: false,
-      isLoggingOut: false,
+      search: {
+        disableSrearchBar: false,
+        searchesPerMinute: 0
+      },
       data: {
         nextUrl: '',
         planets: []
@@ -23,14 +29,22 @@ export default class SearchScreen extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
   }
 
-  componentDidMount = () => {
-    this._interval = setInterval(() => {
-      // Your code
-    }, 5000);
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      console.log('Interval: updating state');
+      const srearchBarWasDisabled = this.state.search.disableSrearchBar;
+      this.updateDisableSrearchBarState(true, () => {
+        if (srearchBarWasDisabled) {
+          const title = 'Search has been enabled :-)';
+          const message = 'You can make 15 consecutive searches in a minute.';
+          alert(title, message);
+        }
+      });
+    }, 60000); // 1 minute
   }
   
   componentWillUnmount() {
-    clearInterval(this._interval);
+    clearInterval(this.interval);
   }
 
   onNavigatorEvent = (event) => { // this is the onPress handler for the buttons
@@ -44,20 +58,30 @@ export default class SearchScreen extends Component {
   logoutHandler = () => {
     Keyboard.dismiss();
     this.props.navigator.setButtons({rightButtons:[]})
-    this.toggleIsLoading(true);
-    setTimeout(() => startLoginScreen(), 1500);
+    this.toggleIsLoadingState();
+    this.updateDisableSrearchBarState(false, () => {});
+    setTimeout(() => startLoginScreen(true), 1500);
   }
 
   searchInputOnChangeTextHandler = (searchStr) => {
     if (searchStr !== '') {
+      if (this.state.username !== ('Luke Skywalker').toLowerCase()) {
+        this.updateDisableSrearchBarState(false, () => {
+          if (this.state.search.disableSrearchBar) {
+            const title = 'Search limit exceeded!!!';
+            const message = 'You have made 15 searches in less than a minute, search will be enabled soon.';
+            alert(title, message);
+          }
+        });
+      }
       let url = `https://swapi.co/api/planets/?search=${searchStr}`;
-      this.toggleIsLoading();
+      this.toggleIsLoadingState();
       this.fetchData(url).then((data) => {
         this.updateDataState(data, true);
-        this.toggleIsLoading();
+        this.toggleIsLoadingState();
       }).catch((error) => {
         console.log('Error:', error)
-        this.toggleIsLoading();
+        this.toggleIsLoadingState();
       });
     } else {
       this.updateDataState({next: '', results: []}, true);
@@ -91,14 +115,23 @@ export default class SearchScreen extends Component {
     }).catch(error => console.log('Error fetching data:', error));
   }
 
-  toggleIsLoading = (disableSrearchBar) => {
+  toggleIsLoadingState = () => {
     this.setState(previousState => {
       return {
-        ...previousState,
-        isLoading: !previousState.isLoading,
-        isLoggingOut: disableSrearchBar ? disableSrearchBar : false
+        isLoading: !previousState.isLoading
       }
     });
+  }
+
+  updateDisableSrearchBarState = (overwrite, callback) => {
+    this.setState(previousState => {
+      return {
+        search: {
+          disableSrearchBar: overwrite === false && previousState.search.searchesPerMinute + 1 === 15 ? true : false,
+          searchesPerMinute: overwrite === false ? previousState.search.searchesPerMinute + 1 : 0
+        }
+      }
+    }, () => callback());
   }
 
   updateDataState = (data, overwrite) => {
@@ -111,8 +144,8 @@ export default class SearchScreen extends Component {
           nextUrl: nextUrl ? nextUrl : '',
           planets: planets
         },
-        minPopulation: Math.min(...planetPopulations),
-        maxPopulation: Math.max(...planetPopulations)
+        minPopulation: planetPopulations.length != 0 ? Math.min(...planetPopulations): 0,
+        maxPopulation: planetPopulations.length != 0 ? Math.max(...planetPopulations): 0
       }
     });
   }
@@ -183,7 +216,12 @@ export default class SearchScreen extends Component {
         <Header transparent searchBar rounded>
           <Item>
             <Icon name="ios-search" />
-            <Input disabled={this.state.isLoggingOut} placeholder="Search" onChangeText={this.searchInputOnChangeTextHandler} />
+            <Input
+              placeholder="Search" onChangeText={this.searchInputOnChangeTextHandler}
+              autoCapitalize='none'
+              autoCorrect={false}
+              disabled={this.state.search.disableSrearchBar}
+            />
           </Item>
         </Header>
         <View style={this.state.isLoading ? styles.content : styles.flatListContainer}>

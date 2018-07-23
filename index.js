@@ -7,7 +7,7 @@ import { registerScreens } from './src/screens/index';
 registerScreens(); // this is where you register all of your app's screens
 
 // Start the login screen
-export const startLoginScreen = () => {
+export const startLoginScreen = (loggedOut) => {
   Navigation.startSingleScreenApp({
     screen: {
       screen: 'star-wars.LoginScreen', // unique ID registered with Navigation.registerScreen
@@ -19,12 +19,15 @@ export const startLoginScreen = () => {
         navBarTextColor: 'white', // change the text color of the title (remembered across pushes)
         navBarTitleTextCentered: true, // default: false. centers the title.
       } // override the navigator style for the screen, see "Styling the navigator" below (optional)
-    }
+    },
+    passProps: {
+      loggedOut
+    } // simple serializable object that will pass as props to all top screens (optional)
   });
 };
 
 // Start the search screen
-export const startSearchScreen = () => {
+export const startSearchScreen = (username) => {
   Promise.all([
     Icon.getImageSource(Platform.OS === 'ios' ? 'ios-log-out' : 'md-log-out', 30)
   ]).then((icons) => {
@@ -48,10 +51,13 @@ export const startSearchScreen = () => {
             }
           ] // buttons for the left side of the nav bar (optional)
         } // override the nav buttons for the screen, see "Adding buttons to the navigator" below (optional)
-      }
+      },
+      passProps: {
+        username
+      } // simple serializable object that will pass as props to all top screens (optional)
     });
   });
 };
 
 // Start the App with the login screen
-startLoginScreen();
+startLoginScreen(false);

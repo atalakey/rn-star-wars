@@ -43,7 +43,7 @@ export default class DetailsScreen extends Component {
 
     Promise.all(promiseArray).then((data) => {
       this.updateDataState(data);
-      this.toggleIsLoading();
+      this.toggleIsLoadingState();
     }).catch(error => console.log('Error:', error));
   }
 
@@ -56,7 +56,7 @@ export default class DetailsScreen extends Component {
     }).catch(error => console.log('Error fetching data:', error));
   }
 
-  toggleIsLoading = () => {
+  toggleIsLoadingState = () => {
     this.setState(previousState => {
       return {
         ...previousState,
