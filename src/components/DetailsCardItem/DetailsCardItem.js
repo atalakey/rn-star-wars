@@ -2,6 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { CardItem, Text } from "native-base";
 
+import ImageCardItem from './ImageCardItem';
 import PlanetDetailsCardItem from './PlanetDetailsCardItem';
 import PersonDetailsCardItem from './PersonDetailsCardItem';
 import FilmDetailsCardItem from './FilmDetailsCardItem';
@@ -9,7 +10,12 @@ import FilmDetailsCardItem from './FilmDetailsCardItem';
 const detailsCardItem = props => {
   let cardItemBodyContent = null;
   if (props.cardItemContentType === 'planet') {
-    cardItemBodyContent = (<PlanetDetailsCardItem data={props.cardItemContent} />);
+    cardItemBodyContent = (
+      <View>
+        <ImageCardItem source={props.imageSource} />
+        <PlanetDetailsCardItem data={props.cardItemContent} />
+      </View>
+    );
   } else if (props.cardItemContentType === 'person') {
     cardItemBodyContent = (
       props.cardItemContent.map((item, index) => {
