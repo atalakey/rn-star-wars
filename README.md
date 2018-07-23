@@ -20,9 +20,9 @@ On clicking the item from the results of the type-along search, the correspondin
 
   + Only the user Luke Skywalker is able to make more than 15 searches in a minute.
 
-## App demo:
+## App Demo:
 
-![](https://media.giphy.com/media/4Zd5reW5gVoJAnuhuT/giphy.gif)
+![](https://thumbs.gfycat.com/SmoggyTerrificBetafish-size_restricted.gif)
 
 ## Installation
 
