@@ -1,4 +1,4 @@
-# rnStarWars
+# rn-star-wars
 
 A React Native STAR WARS.
 
@@ -52,11 +52,11 @@ You must have Xcode, Android Studio (Command line tools), React Native, npm and 
 ``` 
 1. Clone the project:
 
-    git clone https://github.com/atalakey/rnStarWars.git ~/Desktop/rnStarWars-app
+    git clone https://github.com/atalakey/rn-star-wars.git ~/Desktop/rn-star-wars
 
 2. Navigate to where you cloned the project:
 
-    cd ~/Desktop/rnStarWars-app
+    cd ~/Desktop/rn-star-wars
 
 2. Install App local packages:
 
